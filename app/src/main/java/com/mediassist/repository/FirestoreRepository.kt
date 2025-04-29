@@ -1,7 +1,7 @@
 package com.mediassist.repository
 
 import com.google.firebase.firestore.FirebaseFirestore
-import com.mediassist.model.TimeSlot
+import com.mediassist.doctor.model.TimeSlot
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
@@ -11,11 +11,15 @@ import com.google.firebase.Timestamp
 class FirestoreRepository {
     private val db = FirebaseFirestore.getInstance()
 
+    /** Récupère les créneaux du médecin à partir de sa sous-collection */
     fun getDoctorSlotsFlow(doctorId: String): Flow<List<TimeSlot>> = callbackFlow {
-        val sub = db.collection("slots")
-            .whereEqualTo("doctorId", doctorId)
+        val sub = db
+            .collection("doctors")
+            .document(doctorId)
+            .collection("slots")
             .addSnapshotListener { snap, _ ->
-                val list = snap?.documents
+                val list = snap
+                    ?.documents
                     ?.mapNotNull { it.toObject(TimeSlot::class.java) }
                     ?: emptyList()
                 trySend(list).isSuccess
@@ -23,11 +27,14 @@ class FirestoreRepository {
         awaitClose { sub.remove() }
     }
 
+    /** Récupère tous les créneaux non réservés via collectionGroup */
     fun getAvailableSlotsFlow(): Flow<List<TimeSlot>> = callbackFlow {
-        val sub = db.collection("slots")
+        val sub = db
+            .collectionGroup("slots")
             .whereEqualTo("isBooked", false)
             .addSnapshotListener { snap, _ ->
-                val list = snap?.documents
+                val list = snap
+                    ?.documents
                     ?.mapNotNull { it.toObject(TimeSlot::class.java) }
                     ?: emptyList()
                 trySend(list).isSuccess
@@ -35,16 +42,20 @@ class FirestoreRepository {
         awaitClose { sub.remove() }
     }
 
+    /** Ajoute un créneau dans la sous-collection du médecin */
     suspend fun addSlot(
         doctorId: String,
         dateTime: Timestamp,
         isBooked: Boolean = false,
         patientId: String? = null
     ) {
-        val docRef = db.collection("slots").document()
+        val slotsCol = db
+            .collection("doctors")
+            .document(doctorId)
+            .collection("slots")
+        val docRef = slotsCol.document()
         val data = mapOf(
             "id"        to docRef.id,
-            "doctorId"  to doctorId,
             "dateTime"  to dateTime,
             "isBooked"  to isBooked,
             "patientId" to patientId
@@ -52,9 +63,17 @@ class FirestoreRepository {
         docRef.set(data).await()
     }
 
-
-    suspend fun bookSlot(slotId: String, patientId: String) {
-        db.collection("slots").document(slotId)
+    /** Réserve un créneau et marque isBooked=true dans la sous-collection */
+    suspend fun bookSlot(
+        doctorId: String,
+        slotId: String,
+        patientId: String
+    ) {
+        db
+            .collection("doctors")
+            .document(doctorId)
+            .collection("slots")
+            .document(slotId)
             .update(
                 mapOf(
                     "isBooked"  to true,

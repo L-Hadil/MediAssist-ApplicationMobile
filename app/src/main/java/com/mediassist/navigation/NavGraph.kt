@@ -1,30 +1,28 @@
 package com.mediassist.navigation
 
-
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-
-import com.mediassist.doctor.screens.DoctorSlotsScreen     // ← add this
-import com.mediassist.doctor.screens.AppointmentScreen
-import com.mediassist.doctor.screens.CreateSlotScreen
-import com.mediassist.patient.screens.SlotSelectionScreen // ← and this
+import com.mediassist.doctor.model.Appointment
+import com.mediassist.doctor.screens.*
 import com.mediassist.patient.screens.RoleSelectionScreen
+import com.mediassist.patient.screens.SlotSelectionScreen
 import com.mediassist.ui.screens.DoctorStatusScreen
 import com.mediassist.viewmodel.DoctorSlotsViewModel
 import com.mediassist.viewmodel.PatientSlotsViewModel
-import com.mediassist.model.Appointment
 
 object Routes {
-    const val ROLE_SELECTION   = "role_selection"
-    const val DOCTOR_HOME      = "doctor_home"
-    const val DOCTOR_SLOTS     = "doctor_slots"
-    const val DOCTOR_APPTS     = "doctor_appointments"
-    const val PATIENT_HOME     = "patient_home"
-    const val PATIENT_SLOTS    = "patient_slots"
-    const val CREATE_SLOT      = "doctor-cretslot"
-    const val PATIENT_APPTS    = "patient_appointments"
+    const val ROLE_SELECTION      = "role_selection"
+    const val DOCTOR_FORM         = "doctor_form"
+    const val DOCTOR_PROFILE_VIEW = "doctor_profile_view"
+    const val DOCTOR_HOME         = "doctor_home"
+    const val DOCTOR_SLOTS        = "doctor_slots"
+    const val DOCTOR_APPTS        = "doctor_appointments"
+    const val CREATE_SLOT         = "doctor-cretslot"
+    const val PATIENT_HOME        = "patient_home"
+    const val PATIENT_SLOTS       = "patient_slots"
+    const val PATIENT_APPTS       = "patient_appointments"
 }
 
 @Composable
@@ -36,50 +34,58 @@ fun AppNavGraph(
     onAppointmentClick: (Appointment) -> Unit
 ) {
     NavHost(navController = navController, startDestination = Routes.ROLE_SELECTION) {
+
         composable(Routes.ROLE_SELECTION) {
-            RoleSelectionScreen(navController = navController)
+            RoleSelectionScreen(navController)
         }
 
-        // Médecin flow
-        composable(Routes.DOCTOR_HOME) {
-            DoctorStatusScreen(navController = navController)
+        // FORM Médecin
+        composable(Routes.DOCTOR_FORM) {
+            DoctorProfileFormScreen(navController)
         }
+
+        // AFFICHAGE PROFIL Médecin
+        composable(Routes.DOCTOR_PROFILE_VIEW) {
+            DoctorProfileViewScreen(navController)
+        }
+
+        // ACCUEIL Médecin
+        composable(Routes.DOCTOR_HOME) {
+            DoctorStatusScreen(navController)
+        }
+
+        // ↓ ICI, on passe bien **notre** doctorSlotsViewModel
         composable(Routes.DOCTOR_SLOTS) {
             DoctorSlotsScreen(
-                viewModel = doctorSlotsViewModel,
+                viewModel     = doctorSlotsViewModel,
+                navController = navController
+            )
+        }
+
+        // ↓ Pareil pour la création de créneau
+        composable(Routes.CREATE_SLOT) {
+            CreateSlotScreen(
+                viewModel     = doctorSlotsViewModel,
                 navController = navController
             )
         }
         composable(Routes.DOCTOR_APPTS) {
             AppointmentScreen(
-                navController = navController,
-                appointments = appointments,
+                navController     = navController,
+                appointments      = appointments,
                 onAppointmentClick = onAppointmentClick
             )
-        }
-        composable(Routes.CREATE_SLOT) {
-            CreateSlotScreen(navController = navController)
         }
 
         // Patient flow
         composable(Routes.PATIENT_HOME) {
-            SlotSelectionScreen(
-                viewModel = patientSlotsViewModel,
-                navController = navController
-            )
+            SlotSelectionScreen(patientSlotsViewModel, navController)
         }
         composable(Routes.PATIENT_SLOTS) {
-            SlotSelectionScreen(
-                viewModel = patientSlotsViewModel,
-                navController = navController
-            )
+            SlotSelectionScreen(patientSlotsViewModel, navController)
         }
         composable(Routes.PATIENT_APPTS) {
-            AppointmentScreen(
-                navController = navController,
-                appointments = appointments,
-                onAppointmentClick = onAppointmentClick
-            )
+            AppointmentScreen(navController, appointments, onAppointmentClick)
         }
     }
 }

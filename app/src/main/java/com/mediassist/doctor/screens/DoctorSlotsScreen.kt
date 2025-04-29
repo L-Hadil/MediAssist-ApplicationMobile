@@ -14,7 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.mediassist.model.TimeSlot
+import com.mediassist.doctor.model.TimeSlot
 import com.google.firebase.Timestamp
 import com.mediassist.viewmodel.DoctorSlotsViewModel
 import java.time.LocalDate

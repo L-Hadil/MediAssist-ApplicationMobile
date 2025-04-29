@@ -1,4 +1,4 @@
-package com.mediassist.model
+package com.mediassist.doctor.model
 
 import com.google.firebase.Timestamp
 

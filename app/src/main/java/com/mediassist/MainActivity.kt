@@ -1,12 +1,13 @@
+// File: MainActivity.kt
 package com.mediassist
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.material3.MaterialTheme
+import androidx.compose.runtime.Composable
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.rememberNavController
-import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.auth.FirebaseAuth
 import com.mediassist.navigation.AppNavGraph
 import com.mediassist.ui.theme.MediAssistTheme
 import com.mediassist.viewmodel.DoctorSlotsViewModel
@@ -15,33 +16,29 @@ import com.mediassist.viewmodel.PatientSlotsViewModel
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-      //  FirebaseFirestore.getInstance().useEmulator("10.0.2.2", 8080)
-
         setContent {
             MediAssistTheme {
                 val navController = rememberNavController()
 
-                // 🚀 Ici tu passes un doctorId FAUX pour tester (par exemple "doctor123")
-                val doctorId = "doctor123"
+                // UID du user (médecin ou patient)
+                val uid = FirebaseAuth.getInstance().currentUser?.uid ?: ""
 
-                // 🚀 Utiliser les factories pour injecter les paramètres
+                // VM Médecin
                 val doctorSlotsViewModel: DoctorSlotsViewModel = viewModel(
-                    factory = DoctorSlotsViewModel.provideFactory(doctorId)
+                    factory = DoctorSlotsViewModel.provideFactory(uid)
                 )
 
+                // VM Patient
                 val patientSlotsViewModel: PatientSlotsViewModel = viewModel(
                     factory = PatientSlotsViewModel.provideFactory()
                 )
-
 
                 AppNavGraph(
                     navController = navController,
                     doctorSlotsViewModel = doctorSlotsViewModel,
                     patientSlotsViewModel = patientSlotsViewModel,
-                    appointments = listOf(
-                        // ➡️ Mets ici tes données Appointment si tu veux
-                    ),
-                    onAppointmentClick = { /* TODO: clique sur un rendez-vous */ }
+                    appointments = emptyList(),
+                    onAppointmentClick = {}
                 )
             }
         }

@@ -23,7 +23,7 @@ import java.time.LocalTime
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CreateSlotScreen(
-    viewModel: DoctorSlotsViewModel = viewModel(factory = DoctorSlotsViewModel.provideFactory("preview")),
+    viewModel: DoctorSlotsViewModel,  // *injection* depuis NavGraph
     navController: NavController
 ) {
     var showDatePicker by remember { mutableStateOf(false) }

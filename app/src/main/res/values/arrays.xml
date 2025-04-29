@@ -1,0 +1,15 @@
+<resources>
+    <string-array name="doctor_specialties">
+        <item>Généraliste</item>
+        <item>Cardiologue</item>
+        <item>Dermatologue</item>
+        <item>Pédiatre</item>
+        <item>Dentiste</item>
+        <item>ORL</item>
+        <item>Gynécologue</item>
+        <item>Ophtalmologue</item>
+        <item>Psychiatre</item>
+        <item>Radiologue</item>
+        <!-- ajoute ici toutes les spécialités que tu veux -->
+    </string-array>
+</resources>

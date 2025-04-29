@@ -1,4 +1,7 @@
 package com.mediassist.model
+
+import com.mediassist.doctor.model.ContactInfo
+
 data class Patient(
     val id: String = "",               // Firestore document ID
     val nom: String = "",

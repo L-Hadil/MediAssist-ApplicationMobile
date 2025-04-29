@@ -23,12 +23,11 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import com.mediassist.model.Appointment
-import com.mediassist.model.AppointmentType
-import com.mediassist.model.AppointmentStatus
+import com.mediassist.doctor.model.Appointment
+import com.mediassist.doctor.model.AppointmentType
+import com.mediassist.doctor.model.AppointmentStatus
 import com.mediassist.navigation.Routes
 import com.mediassist.ui.theme.MediAssistTheme
 import java.time.LocalDate

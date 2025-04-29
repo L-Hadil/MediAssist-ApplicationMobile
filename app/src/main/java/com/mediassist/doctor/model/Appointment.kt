@@ -1,5 +1,4 @@
-// File: Appointment.kt
-package com.mediassist.model
+package com.mediassist.doctor.model
 
 import java.time.LocalDateTime
 

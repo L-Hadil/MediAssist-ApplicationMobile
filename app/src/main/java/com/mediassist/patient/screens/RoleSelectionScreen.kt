@@ -22,9 +22,13 @@ fun RoleSelectionScreen(navController: NavController) {
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        Button(onClick = { navController.navigate(Routes.DOCTOR_HOME) }) {
+        Button(
+            onClick = { navController.navigate(Routes.DOCTOR_FORM) },
+            modifier = Modifier.fillMaxWidth().padding(16.dp)
+        ) {
             Text("Je suis médecin")
         }
+
         Spacer(modifier = Modifier.height(16.dp))
         Button(onClick = { navController.navigate(Routes.PATIENT_HOME) }) {
             Text("Je suis patient")

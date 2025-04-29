@@ -14,17 +14,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import com.mediassist.navigation.Routes
-
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DoctorStatusScreen(navController: NavController) {
-    var selectedItem by remember { mutableStateOf(3) } // Par défaut sur "Rendez-vous"
+    var selectedItem by remember { mutableStateOf(3) }
 
     Box(
         modifier = Modifier
@@ -35,24 +32,26 @@ fun DoctorStatusScreen(navController: NavController) {
                 )
             )
     ) {
+        // Unique TopAppBar
         TopAppBar(
             title = { Text("Statut Médecin") },
             actions = {
-                IconButton(onClick = { /* TODO: Search */ }) {
-                    Icon(Icons.Filled.Search, contentDescription = null)
+                IconButton(onClick = { /* TODO: search */ }) {
+                    Icon(Icons.Filled.Search, contentDescription = "Recherche")
                 }
-                IconButton(onClick = { /* TODO: Profile */ }) {
-                    Icon(Icons.Filled.AccountCircle, contentDescription = null)
+                IconButton(onClick = {
+                    navController.navigate(Routes.DOCTOR_PROFILE_VIEW)
+                }) {
+                    Icon(Icons.Filled.AccountCircle, contentDescription = "Voir profil")
                 }
             },
-            colors = TopAppBarDefaults.topAppBarColors(
-                containerColor = Color.Transparent
-            ),
+            colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent),
             modifier = Modifier
                 .fillMaxWidth()
                 .statusBarsPadding()
         )
 
+        // Cercle + quadrant
         Box(
             modifier = Modifier
                 .size(260.dp)
@@ -64,19 +63,19 @@ fun DoctorStatusScreen(navController: NavController) {
                 drawLine(color = Color.White, start = Offset(0f, center.y), end = Offset(size.width, center.y), strokeWidth = 4f)
                 drawLine(color = Color.White, start = Offset(center.x, 0f), end = Offset(center.x, size.height), strokeWidth = 4f)
             }
-
             Column {
                 Row {
-                    QuadrantItem(Icons.Filled.MedicalServices, "Consultation") { /* TODO */ }
-                    QuadrantItem(Icons.Filled.Home, "Domicile") { /* TODO */ }
+                    QuadrantItem(Icons.Filled.MedicalServices, "Consultation") {}
+                    QuadrantItem(Icons.Filled.Home, "Domicile") {}
                 }
                 Row {
-                    QuadrantItem(Icons.Filled.AddAlert, "Urgence") { /* TODO */ }
-                    QuadrantItem(Icons.Filled.DoNotDisturbOn, "Ne pas déranger") { /* TODO */ }
+                    QuadrantItem(Icons.Filled.AddAlert, "Urgence") {}
+                    QuadrantItem(Icons.Filled.DoNotDisturbOn, "Ne pas déranger") {}
                 }
             }
         }
 
+        // Barre du bas
         BottomNavBar(
             selectedIndex = selectedItem,
             onItemSelected = { index ->
@@ -93,11 +92,7 @@ fun DoctorStatusScreen(navController: NavController) {
 }
 
 @Composable
-private fun QuadrantItem(
-    icon: androidx.compose.ui.graphics.vector.ImageVector,
-    label: String,
-    onClick: () -> Unit
-) {
+private fun QuadrantItem(icon: androidx.compose.ui.graphics.vector.ImageVector, label: String, onClick: () -> Unit) {
     Column(
         modifier = Modifier
             .size(130.dp)
@@ -112,11 +107,7 @@ private fun QuadrantItem(
 }
 
 @Composable
-private fun BottomNavBar(
-    selectedIndex: Int,
-    onItemSelected: (Int) -> Unit,
-    modifier: Modifier = Modifier
-) {
+private fun BottomNavBar(selectedIndex: Int, onItemSelected: (Int) -> Unit, modifier: Modifier = Modifier) {
     Row(
         modifier = modifier
             .background(Color(0xFFD0E8FF))
@@ -130,7 +121,6 @@ private fun BottomNavBar(
             Icons.Filled.Notifications to "Notifications",
             Icons.Filled.Event to "Rendez-vous"
         )
-
         items.forEachIndexed { index, (icon, label) ->
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
@@ -138,24 +128,9 @@ private fun BottomNavBar(
                     .clickable { onItemSelected(index) }
                     .padding(horizontal = 8.dp)
             ) {
-                Icon(
-                    icon,
-                    contentDescription = label,
-                    tint = if (selectedIndex == index) MaterialTheme.colorScheme.primary else Color.Gray
-                )
-                Text(
-                    label,
-                    style = MaterialTheme.typography.labelSmall,
-                    color = if (selectedIndex == index) MaterialTheme.colorScheme.primary else Color.Gray
-                )
+                Icon(icon, contentDescription = label, tint = if (selectedIndex == index) MaterialTheme.colorScheme.primary else Color.Gray)
+                Text(label, style = MaterialTheme.typography.labelSmall, color = if (selectedIndex == index) MaterialTheme.colorScheme.primary else Color.Gray)
             }
         }
     }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun DoctorStatusScreenPreview() {
-    val navController = rememberNavController()
-    DoctorStatusScreen(navController)
 }

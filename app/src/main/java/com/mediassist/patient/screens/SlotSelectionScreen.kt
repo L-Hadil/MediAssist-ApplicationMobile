@@ -11,8 +11,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavHostController
+import androidx.navigation.NavController                              // <-- NavController, pas NavHostController
 import com.mediassist.viewmodel.PatientSlotsViewModel
+import com.mediassist.navigation.Routes                           // <-- pour la route
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 
@@ -20,8 +21,9 @@ import java.time.format.DateTimeFormatter
 @Composable
 fun SlotSelectionScreen(
     viewModel: PatientSlotsViewModel,
-    navController: NavHostController
+    navController: NavController
 ) {
+    // On lit le StateFlow des créneaux dispos
     val slots by viewModel.slots.collectAsState()
     val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")
 
@@ -43,6 +45,7 @@ fun SlotSelectionScreen(
                 }
             } else {
                 items(slots) { slot ->
+                    // Convertit le Timestamp Firebase en LocalDateTime
                     val localDT = slot.dateTime
                         ?.toDate()
                         ?.toInstant()
@@ -52,7 +55,12 @@ fun SlotSelectionScreen(
                     Card(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .clickable { viewModel.bookSlot(slot.id) },
+                            .clickable {
+                                // 1) Réserve le créneau
+                                viewModel.bookSlot(slot)
+                                // 2) Navigue vers la liste des RDV du patient
+                                navController.navigate(Routes.PATIENT_APPTS)
+                            },
                         colors = CardDefaults.cardColors(
                             containerColor = MaterialTheme.colorScheme.surface
                         )

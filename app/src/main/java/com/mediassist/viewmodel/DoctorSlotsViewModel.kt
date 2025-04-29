@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.Timestamp
-import com.mediassist.model.TimeSlot
+import com.mediassist.doctor.model.TimeSlot
 import com.mediassist.repository.FirestoreRepository
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.SharingStarted

@@ -73,10 +73,15 @@ dependencies {
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
 
-    // Firebase BOM (use existing version)
+    // Firebase BOM (gère les versions Auth/Firestore/Storage)
     implementation(platform("com.google.firebase:firebase-bom:31.5.0"))
-    // Firestore
     implementation("com.google.firebase:firebase-firestore-ktx")
-    // Auth (optional)
     implementation("com.google.firebase:firebase-auth-ktx")
+    implementation("com.google.firebase:firebase-storage-ktx")
+
+    // Image picker / Activity result API
+    implementation("androidx.activity:activity-compose:1.8.2")
+
+    // Coil pour Compose (AsyncImage)
+    implementation("io.coil-kt:coil-compose:2.3.0")
 }
